@@ -29,7 +29,7 @@ def fetch(today):
             t = _time(desc)
             addr = norm(x.get("address") or ""); place = (x.get("place") or "").strip()
             city = city_of(addr, place, title) or "新北市"
-            m = re.search(r"https?://[^\s，。）)]+", desc)
+            m = re.search(r"https?://[A-Za-z0-9:/?&=._%#~+@!-]+", desc)
             reg = m.group(0) if (m and "報名" in desc) else ""
             out.append({"id": f"ntpc:{x.get('id')}", "source": NAME, "title": title,
                 "category": categorize(title + " " + desc[:200]), "start": st.isoformat(), "end": en.isoformat(),
