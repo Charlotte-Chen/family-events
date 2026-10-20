@@ -1,0 +1,35 @@
+name: 每日更新親子活動
+on:
+  schedule:
+    - cron: "0 21 * * *"   # 每天台灣時間 05:00
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+concurrency: { group: pages, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: 抓資料並重建 events.json
+        run: python build.py
+      - name: 有變動就提交
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898888+github-actions[bot]@users.noreply.github.com"
+          git add data/events.json
+          git diff --cached --quiet || (git commit -m "每日更新活動資料 $(TZ=Asia/Taipei date +%F)" && git push)
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: "." }
+      - id: deployment
+        uses: actions/deploy-pages@v4
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
