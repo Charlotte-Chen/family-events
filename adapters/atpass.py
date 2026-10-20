@@ -40,7 +40,7 @@ def fetch(today, max_pages=40):
             if not is_family(act + " " + ses + " " + _t(it)[:300], act): continue
             q = re.search(r'listMessageQuota">[\s\S]*?<p>([^<]*)</p>', it)
             reg = re.findall(r'listMessageTimeText">\s*<p>([^<]+)</p>\s*<span>~</span>\s*<p>([^<]+)</p>', it)
-            br = re.search(r"《([^》]+)》", ses) or re.search(r"【([^】]+)】", act)
+            br = re.search(r"《([^》]{1,12}(?:館|室|堂|中心))》", ses) or re.search(r"【([^】]+)】", act)
             branch = br.group(1) if br else ""
             if branch in ("全市",): branch = ""
             venue = ("新北市立圖書館" + branch) if branch and "圖書" not in branch else (branch or "新北市立圖書館")
