@@ -21,11 +21,12 @@ jobs:
       - name: 抓資料並重建 events.json
         run: python build.py
       - name: 有變動就提交
+        if: github.event_name != 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898888+github-actions[bot]@users.noreply.github.com"
           git add data/
-          git diff --cached --quiet || (git commit -m "每日更新活動資料 $(TZ=Asia/Taipei date +%F)" && git push)
+          git diff --cached --quiet || (git commit -m "每日更新活動資料 $(TZ=Asia/Taipei date +%F)" && git pull --rebase -X theirs && git push)
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: "." }
