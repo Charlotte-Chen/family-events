@@ -53,6 +53,16 @@ main{max-width:720px;margin:0 auto;padding:0 0 30px}
 .long summary:after{content:" ▾";color:var(--mute)}
 .long .card{margin:6px 10px 8px;border-left-color:var(--sun)}
 .empty{text-align:center;color:var(--mute);padding:30px 16px}
+.grab{margin:12px 16px 4px;background:#fff6dc;border:1.5px solid #f2b33d;border-radius:14px;padding:10px 12px}
+.grab h2{margin:0 0 6px;font-size:16px}.grab h2 small{font-weight:500;color:var(--mute);font-size:12px;margin-left:6px}
+.gi{display:flex;gap:8px;padding:7px 0;border-top:1px dashed #ecd9a8;font-size:14px;line-height:1.4}
+.gi:first-of-type{border-top:0}
+.gi .when{flex:none;width:92px;font-weight:800;color:#a63d24;font-size:13px}
+.gi .when small{display:block;font-weight:500;color:var(--mute);font-size:11px}
+.gi a{color:var(--ink);text-decoration:none;font-weight:600}
+.gi .sub{font-size:12px;color:var(--mute)}
+.gmore{border:0;background:none;color:#a63d24;font-weight:700;font-family:inherit;font-size:13px;padding:6px 0 0}
+.tag.age{background:#efe4fb;color:#5b3a8a}.tag.topic{background:#e3f1e6;color:#2b6a3a}
 footer{color:var(--mute);font-size:12px;text-align:center;padding:16px 18px 30px;line-height:1.7}
 </style>
 </head>
@@ -67,15 +77,17 @@ footer{color:var(--mute);font-size:12px;text-align:center;padding:16px 18px 30px
     <button class="chip pill" data-k="noreg" aria-pressed="false">不用報名</button>
     <button class="chip pill" data-k="indoor" aria-pressed="false">☂ 下雨也能去</button>
     <button class="chip pill" id="near" aria-pressed="false">📍 離我最近</button>
+    <select class="chip" id="age" aria-label="年齡"><option value="">全部年齡</option></select>
     <select class="chip" id="cat" aria-label="類型"><option value="">全部類型</option></select>
   </div>
+  <div class="row" id="topics" aria-label="主題"></div>
 </div>
-<main><div id="tl"><div class="empty">載入中…</div></div><div id="more"></div><div id="longwrap"></div></main>
+<main><div id="grab"></div><div id="tl"><div class="empty">載入中…</div></div><div id="more"></div><div id="longwrap"></div></main>
 <footer id="foot"></footer>
 <script>
 const WD="日一二三四五六",$=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const S={range:"",from:"",to:"",city:"",cat:"",free:false,noreg:false,indoor:false,near:false,pos:null,days:10};
+const S={age:"",topic:"",grabAll:false,range:"",from:"",to:"",city:"",cat:"",free:false,noreg:false,indoor:false,near:false,pos:null,days:10};
 let D=null,OCC=[],LONG=[];
 const pad=n=>String(n).padStart(2,"0"),ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const tw=()=>new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Taipei"}));
@@ -89,13 +101,14 @@ const R=ranges();
 function km(a,b,c,d){const r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 12742*Math.asin(Math.sqrt(x))}
 const OUT=/戶外|公園|廣場|步道|河濱|農場|露營|登山|海灘|草地|園區戶外|踏青|生態導覽/,IN=/圖書館|劇場|劇院|廳|博物館|美術館|文化中心|藝文中心|教室|兒童室|室內|展覽室|紀念館|故事館|書店|誠品|影城|親子館/;
 function indoor(e,o){const t=e.title+(o.venue||e.venue||"")+(e.description||"").slice(0,120);if(OUT.test(t))return false;if(IN.test((o.venue||e.venue||"")+e.title))return true;return null}
-function age(e,o){const t=e.title+" "+(o.name||"")+" "+(e.description||"").slice(0,200);let m=t.match(/(\d{1,2})\s*(?:個月)?\s*[-~～至到]\s*(\d{1,2})\s*(歲|個月)/);if(m)return`${m[1]}–${m[2]}${m[3]}`;m=t.match(/(\d{1,2})\s*歲以上/);if(m)return`${m[1]}歲以上`;if(/寶寶|嬰幼兒/.test(t))return"0–3歲";return""}
+function age(e,o){if(e.age)return e.age.label;const t=e.title+" "+(o.name||"")+" "+(e.description||"").slice(0,200);let m=t.match(/(\d{1,2})\s*(?:個月)?\s*[-~～至到]\s*(\d{1,2})\s*(歲|個月)/);if(m)return`${m[1]}–${m[2]}${m[3]}`;m=t.match(/(\d{1,2})\s*歲以上/);if(m)return`${m[1]}歲以上`;if(/寶寶|嬰幼兒/.test(t))return"0–3歲";return""}
 const link=e=>e.ticketUrl||e.registrationUrl||e.url||"";
 const twc=c=>(c||"").replace("臺","台");
 function cityOk(e,o){const c=(o&&o.city)||e.city;return !S.city||(S.city==="雙北"?(c==="新北市"||c==="臺北市"):c===S.city)}
 function pass(e,o){if(!cityOk(e,o))return false;if(S.cat&&e.category!==S.cat)return false;if(S.free&&e.free!==true)return false;
  if(S.noreg&&(e.needsRegistration||e.registrationUrl&&!e.ticketUrl||e.ticketUrl))return false;
  if(S.indoor&&indoor(e,o)!==true)return false;
+ if(S.age&&!(e.ageBuckets||[]).includes(S.age))return false;if(S.topic&&!(e.topics||[]).includes(S.topic))return false;
  o._d=null;if(S.pos){const la=o.lat??e.lat,lo=o.lng??e.lng;if(la!=null)o._d=km(S.pos[0],S.pos[1],la,lo)}
  if(S.near&&(o._d==null||o._d>15))return false;return true}
 function card(e,o,long){
@@ -103,11 +116,12 @@ function card(e,o,long){
  const v=o.venue||e.venue||"地點見活動頁";
  const tags=[];
  if(e.free===true)tags.push('<span class="tag free">免費</span>');else if(e.free===false)tags.push(`<span class="tag paid">${e.ticketUrl?"售票":"收費"}</span>`);
- const a=age(e,o);if(a)tags.push(`<span class="tag">${esc(a)}</span>`);
+ const a=age(e,o);if(a)tags.push(`<span class="tag age">${esc(a)}</span>`);
  if(e.ticketUrl)tags.push('<span class="tag reg">需購票</span>');
- else if(e.registrationUrl||e.needsRegistration)tags.push(`<span class="tag reg">需報名${o.regEnd?`（截止 ${md(o.regEnd.slice(0,10))}）`:""}</span>`);
+ else if(e.registrationUrl||e.needsRegistration)tags.push(`<span class="tag reg">需報名${o.regEnd?`（截止 ${md(o.regEnd.slice(0,10))}）`:""}${leftOf(o)!=null?`・剩 ${leftOf(o)} 名`:""}</span>`);
  const io=indoor(e,o);if(io!==null)tags.push(`<span class="tag">${io?"室內":"戶外"}</span>`);
- tags.push(`<span class="tag">${esc(D.categories[e.category]||"其他")}</span>`);
+ (e.topics||[]).forEach(t=>tags.push(`<span class="tag topic">${esc(t)}</span>`));
+ if(!(e.topics||[]).length)tags.push(`<span class="tag">${esc(D.categories[e.category]||"其他")}</span>`);
  if(e.recurrence)tags.push(`<span class="tag rec">↻ ${esc(e.recurrence)}</span>`);
  if(o._d!=null)tags.push(`<span class="tag dist">${o._d<1?Math.round(o._d*1000)+" 公尺":o._d.toFixed(1)+" 公里"}</span>`);
  if(long&&e.longRange)tags.unshift(`<span class="tag rec">展到 ${md(e.longRange.to)}</span>`);
@@ -115,6 +129,21 @@ function card(e,o,long){
  const dl=long?"":`<span class="d">${mdw(o.date)}</span>`;
  return `<article class="card"><div class="l1">${dl}${t?esc(t)+"｜":""}<span class="v">${esc(v)}</span>${(o.city||e.city)?`<span class="c">${esc(twc(o.city||e.city))}</span>`:""}</div>
  <div class="l2">${title}</div><div class="tags">${tags.join("")}</div>${e.recurrenceNote&&!long?`<div class="note">↻ ${esc(e.recurrenceNote)}</div>`:""}${o.name&&o.name!==e.title?`<div class="note" style="color:var(--mute)">場次：${esc(o.name)}</div>`:""}</article>`}
+function leftOf(o){if(o.left)return +o.left;const m=String(o.quota||"").match(/^(\d+)\/(\d+)$/);if(m)return Math.max(0,m[2]-m[1]);return null}
+function nowStr(){const t=tw();return `${ymd(t)} ${pad(t.getHours())}:${pad(t.getMinutes())}`}
+function grab(){const now=nowStr(),best={};
+ for(const [e,o] of OCC){if(!pass(e,o))continue;if(/截止|額滿/.test(o.status||""))continue;
+  const rs=o.regStart||"",re_=o.regEnd?(o.regEnd.length<=10?o.regEnd+" 23:59":o.regEnd):"";let k=null,lab="";
+  if(rs&&rs>now){k=rs;lab="opens"}else if(re_&&re_>=now){k=re_;lab="closes"}else continue;
+  const L=leftOf(o);if(L===0)continue;
+  const id=e.id;if(!best[id]||k<best[id].k)best[id]={k,lab,e,o,L}}
+ const arr=Object.values(best).sort((a,b)=>a.k<b.k?-1:1);if(!arr.length){$("#grab").innerHTML="";return}
+ const show=S.grabAll?arr:arr.slice(0,5);
+ const fmt=k=>{const d=k.slice(0,10),t=k.slice(11,16);return `${mdw(d)}${t&&t!=="23:59"&&t!=="00:00"?" "+t:""}`};
+ $("#grab").innerHTML=`<section class="grab"><h2>⏰ 先搶報名<small>依開放／截止時間排序・${arr.length} 項</small></h2>`+show.map(({k,lab,e,o,L})=>{const Lk=link(e);
+  return `<div class="gi"><div class="when">${fmt(k)}<small>${lab==="opens"?"開放報名":"報名截止"}</small></div><div><a href="${esc(Lk)}" target="_blank" rel="noopener">${esc(e.title)}</a><div class="sub">活動 ${mdw(o.date)}${o.t1?" "+o.t1:""}｜${esc(o.venue||e.venue)}${L!=null?`｜剩 ${L} 名`:(o.quota?`｜名額 ${esc(o.quota)}`:"")}</div></div></div>`}).join("")+
+  (arr.length>5?`<button class="gmore" id="gmore">${S.grabAll?"收起":"看全部 "+arr.length+" 項 ▾"}</button>`:"")+`</section>`;
+ const g=$("#gmore");if(g)g.onclick=()=>{S.grabAll=!S.grabAll;grab()}}
 function filtered(){const a=S.from||TODAY,b=S.to||"9999";return OCC.filter(([e,o])=>o.date>=a&&o.date<=b&&pass(e,o))}
 function render(){
  const list=filtered(),by={};list.forEach(x=>(by[x[1].date]||(by[x[1].date]=[])).push(x));
@@ -136,7 +165,7 @@ function render(){
  // 長期展覽（折疊在最下面）
  const lg=LONG.filter(([e,o])=>pass(e,o));
  $("#longwrap").innerHTML=lg.length?`<details class="long"><summary>都沒喜歡的？常設與長期展覽（${lg.length}）</summary>${lg.map(([e,o])=>card(e,o,true)).join("")}</details>`:"";
- summary()}
+ summary();grab()}
 function summary(){const r=R.weekend,cityL=S.city?twc(S.city):"全台";
  const n=OCC.filter(([e,o])=>o.date>=r[1]&&o.date<=r[2]&&cityOk(e,o));const f=n.filter(([e])=>e.free===true).length;
  $("#summary").innerHTML=`這週末 ${esc(cityL)} ${n.length} 場，免費 ${f} 場 →<small>${md(r[1])}–${md(r[2])}・點一下只看這週末</small>`}
@@ -155,6 +184,10 @@ fetch("data/events.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{D=d;
  $("#city").onchange=ev=>{S.city=ev.target.value;S.days=14;render()};
  const used=new Set(d.events.map(e=>e.category));$("#cat").innerHTML+=Object.entries(d.categories).filter(([k])=>used.has(k)).map(([k,v])=>`<option value="${k}">${v}</option>`).join("");
  $("#cat").onchange=ev=>{S.cat=ev.target.value;render()};
+ $("#age").innerHTML+=(d.ageBuckets||[]).map(([k,l])=>`<option value="${k}">${l}</option>`).join("");
+ $("#age").onchange=ev=>{S.age=ev.target.value;S.days=14;render()};
+ $("#topics").innerHTML=[["","全部主題"],...(d.topics||[]).map(t=>[t,t])].map(([k,l])=>`<button class="chip" data-t="${k}" aria-pressed="${k===""}">${l}</button>`).join("");
+ $("#topics").onclick=ev=>{const b=ev.target.closest("button");if(!b)return;S.topic=b.dataset.t;$("#topics").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));S.days=14;render()};
  document.querySelectorAll(".pill[data-k]").forEach(b=>b.onclick=()=>{S[b.dataset.k]=!S[b.dataset.k];b.setAttribute("aria-pressed",S[b.dataset.k]);S.days=14;render()});
  $("#near").onclick=ev=>{const b=ev.currentTarget;if(S.near){S.near=false;b.setAttribute("aria-pressed","false");render();return}
   b.textContent="📍 定位中…";setPos(ok=>{b.textContent="📍 離我最近";if(!ok){alert("無法取得位置，請到設定允許瀏覽器使用定位");return}S.near=true;b.setAttribute("aria-pressed","true");render()})};

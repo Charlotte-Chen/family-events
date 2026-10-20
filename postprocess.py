@@ -59,7 +59,7 @@ def expand(e, today):
         sd = _d(s["start"]); ed = _d(s["end"]) if s.get("end") else sd
         t1 = s["start"][11:16]; t2 = s["end"][11:16] if s.get("end") else ""
         if t1 == "00:00" and t2 in ("", "00:00", "23:59"): t1 = t2 = ""
-        base = {k: s.get(k) for k in ("venue","address","lat","lng","name","quota","regStart","regEnd") if s.get(k) not in (None, "")}
+        base = {k: s.get(k) for k in ("venue","address","lat","lng","name","quota","left","status","regStart","regEnd") if s.get(k) not in (None, "")}
         span = (ed - sd).days
         if span == 0:
             occ.append({"date": sd.isoformat(), "t1": t1, "t2": t2, **base}); continue
@@ -138,3 +138,55 @@ def geocode_all(events, max_new=80):
         for o in e.get("occurrences", []):
             if o.get("lat") is None and e.get("lat") is not None: o["lat"], o["lng"] = e["lat"], e["lng"]
     return new
+
+
+# ---- 年齡與主題標籤 ----
+AGE_BUCKETS = [("baby", "0–3 歲", 0, 3), ("k", "幼兒園", 3, 6), ("low", "國小低年級", 6, 9), ("mid", "國小中高年級", 9, 12), ("teen", "國中以上", 12, 99)]
+CN = {"一":1,"二":2,"三":3,"四":4,"五":5,"六":6}
+def _g(c): return CN.get(c) or (int(c) if c.isdigit() else None)
+def parse_age(text):
+    """回傳 (lo, hi, 原文)；找不到回傳 None。"""
+    t = text
+    m = re.search(r"(大班|中班|小班|幼兒園|幼稚園|國小[一二三四五六1-6]?年級|小[一二三四五六])\s*(?:至|到|~|～|-|－)\s*(國小)?([一二三四五六1-6])\s*年級", t)
+    if m:
+        lo = {"大班":5,"中班":4,"小班":3,"幼兒園":3,"幼稚園":3}.get(m.group(1))
+        if lo is None:
+            g = re.search(r"([一二三四五六1-6])", m.group(1)); lo = _g(g.group(1)) + 5
+        return lo, _g(m.group(3)) + 6, m.group(0)
+    m = re.search(r"(\d{1,2})\s*(?:歲)?\s*(?:至|到|~|～|-|－|–)\s*(\d{1,2})\s*歲", t)
+    if m and int(m.group(1)) < int(m.group(2)) <= 18: return int(m.group(1)), int(m.group(2)), m.group(0)
+    m = re.search(r"(\d{1,2})\s*(?:至|到|~|～|-|－|–)\s*(\d{1,2})\s*個月", t)
+    if m: return 0, 2, m.group(0)
+    m = re.search(r"(\d{1,2})\s*歲(?:\(含\))?以上", t)
+    if m and int(m.group(1)) <= 15: return int(m.group(1)), 99, m.group(0)
+    m = re.search(r"小([一二三四五六])以上|國小([一二三四五六])年級以上", t)
+    if m: g = _g(m.group(1) or m.group(2)); return g + 5, 99, m.group(0)
+    m = re.search(r"國小([低中高])年級", t)
+    if m:
+        lo, hi = {"低":(6,8),"中":(8,10),"高":(10,12)}[m.group(1)]
+        if re.search(r"國小[低中高]年級(?:至|到|以上).{0,3}(成人|大人|一般)|年級以上", t): hi = 99
+        return lo, hi, m.group(0)
+    m = re.search(r"國小([一二三四五六])\s*[、至~-]\s*([一二三四五六])年級", t)
+    if m: return _g(m.group(1)) + 5, _g(m.group(2)) + 6, m.group(0)
+    if re.search(r"嬰幼兒|寶寶|0\s*-\s*3歲|學步", t): return 0, 3, "嬰幼兒"
+    if re.search(r"幼兒園|幼稚園|學齡前", t): return 3, 6, "學齡前"
+    if re.search(r"國小學童|國小學生|小學生|國小以上", t): return 6, 12, "國小"
+    return None
+TOPICS = {"科學": r"科學|實驗|STEM|STEAM|科教|機器人|程式|物理|化學|數學|工程|科普|發明|電路|AI",
+          "天文": r"天文|星空|星座|宇宙|行星|望遠鏡|球幕|太空|月亮|日食|月食",
+          "歷史": r"歷史|古蹟|考古|文化資產|人權|二二八|文物|鐵道部|老街|史前|博物館導覽|轉型正義|十三行|黃金博物館|礦",
+          "自然": r"自然|生態|動物|植物|昆蟲|鳥|濕地|蝶|海洋|環境教育|永續|森林|綠色|農|種子|恐龍|化石",
+          "藝術": r"藝術|美術|繪畫|畫畫|音樂|戲劇|舞蹈|偶戲|布袋戲|手作|工藝|陶|劇場|音樂會|劇團|彩繪|DIY",
+          "語言": r"英語|英文|台語|臺語|客語|族語|日語|雙語|閱讀|繪本|說故事|故事屋|文學|母語|讀劇"}
+def tag(e):
+    text = e["title"] + " " + (e.get("description") or "") + " " + " ".join(o.get("name", "") for o in e.get("occurrences", [])[:5])
+    a = parse_age(text)
+    if a:
+        lo, hi, raw = a
+        e["age"] = {"lo": lo, "hi": hi, "label": (f"{lo}–{hi} 歲" if hi < 99 else f"{lo} 歲以上") if not re.search(r"[班級園前兒國小]", raw) else raw.replace(" ", "")}
+        e["ageBuckets"] = [k for k, _, blo, bhi in AGE_BUCKETS if lo < bhi and hi > blo]
+    tp = set(e.get("tags") or [])
+    for k, rx in TOPICS.items():
+        if re.search(rx, e["title"]) or re.search(rx, (e.get("description") or "")[:300]): tp.add(k)
+    e["topics"] = [k for k in TOPICS if k in tp]
+    return e

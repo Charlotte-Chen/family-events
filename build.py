@@ -33,15 +33,18 @@ def main():
     for e in sorted(events, key=lambda e: (PRI.get(e["source"], 9), e["start"], e["title"])):
         k = (re.sub(r"^\s*【[^】]*】\s*|\s+", "", e["title"]), e["start"][:7])
         if k in seen and seen[k] != e["source"]: continue
+        k2 = (e["source"], e["title"], e["sessions"][0]["start"] if e.get("sessions") else e["start"])
+        if k2 in seen: continue
+        seen[k2] = 1
         seen.setdefault(k, e["source"]); uniq.append(e)
     if not uniq: sys.exit("no events; refusing to overwrite")
-    uniq = [postprocess.expand(e, today) for e in uniq]
+    uniq = [postprocess.tag(postprocess.expand(e, today)) for e in uniq]
     uniq = [e for e in uniq if e["occurrences"] or e["longRunning"]]
     dated = {e["title"].strip() for e in uniq if e["occurrences"]}
     uniq = [e for e in uniq if e["occurrences"] or e["title"].strip() not in dated]
     try: print("geocoded new:", postprocess.geocode_all(uniq))
     except Exception: traceback.print_exc()
-    json.dump({"generatedAt": datetime.now(TZ).isoformat(timespec="minutes"), "sources": stats, "categories": CAT_LABEL,
+    json.dump({"generatedAt": datetime.now(TZ).isoformat(timespec="minutes"), "sources": stats, "categories": CAT_LABEL, "ageBuckets": [[k, l] for k, l, _, _ in postprocess.AGE_BUCKETS], "topics": list(postprocess.TOPICS),
                "events": uniq}, open("data/events.json", "w"), ensure_ascii=False, separators=(",", ":"))
     print(json.dumps(stats, ensure_ascii=False), len(uniq))
 if __name__ == "__main__": main()
