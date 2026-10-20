@@ -13,6 +13,12 @@ def main():
         try:
             ev = a.fetch(today)
             if not ev: raise RuntimeError("0 筆")
+            try: old = json.load(open(f"data/raw/{a.NAME}.json"))
+            except Exception: old = []
+            if len(ev) < 0.7 * len(old):  # 來源暫時少很多筆：保留上次仍有效的活動
+                ids = {x["id"] for x in ev}
+                keep = [x for x in old if x["id"] not in ids and x["end"] >= today.isoformat()]
+                print(f"{a.NAME}: 只抓到 {len(ev)} 筆（上次 {len(old)}），補回 {len(keep)} 筆舊資料"); ev += keep
             json.dump(ev, open(f"data/raw/{a.NAME}.json", "w"), ensure_ascii=False)
             stats[a.NAME] = {"label": a.LABEL, "count": len(ev), "ok": True}
         except Exception as e:
