@@ -4,12 +4,16 @@ from .common import fetch_json, is_family, categorize, city_of, district_of, fre
 NAME = "moc"
 LABEL = "文化部藝文活動"
 URL = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=all"
+URL_KIDS = "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=4"
 def _dt(s):
     try: return datetime.strptime(s.strip(), "%Y/%m/%d %H:%M:%S")
     except Exception: return None
 def fetch(today):
     out = []
-    for x in fetch_json(URL):
+    rows = {}
+    for x in fetch_json(URL_KIDS): x["category"] = "4"; rows[x["UID"]] = x   # 親子類：全部收錄，不做關鍵字篩選
+    for x in fetch_json(URL): rows.setdefault(x["UID"], x)
+    for x in rows.values():
         title = (x.get("title") or "").strip()
         desc = x.get("descriptionFilterHtml") or ""
         text = title + " " + desc[:600]

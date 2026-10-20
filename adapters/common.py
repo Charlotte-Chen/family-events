@@ -11,9 +11,10 @@ def fetch_json(url, timeout=90):
 
 FAMILY_KW = ["親子","兒童","孩童","小朋友","幼兒","幼童","繪本","說故事","故事屋","故事時間","布袋戲","偶戲","人偶","魔術",
              "兒童劇","兒歌","童話","童書","科學營","夏令營","冬令營","小小","闔家","全家","寶寶","嬰幼兒","國小","學童","親職","family","Kids","kids"]
-EXCLUDE_KW = ["成人限定","18歲以上","限18","樂齡","長者","銀髮","失智"]
+EXCLUDE_KW = ["成人限定","18歲以上","限18","樂齡","長者","銀髮","失智","講座音樂會","合唱團","讀書會","影友會","成人","青銀","職場","退休","樂活美學"]
+STRONG_KW = ["親子","兒童","小朋友","幼兒","寶寶","孩子","童話","繪本","兒歌"]
 def is_family(text, title=""):
-    if any(k in title for k in EXCLUDE_KW): return False
+    if any(k in title for k in EXCLUDE_KW) and not any(k in title for k in STRONG_KW): return False
     return any(k in text for k in FAMILY_KW)
 
 CAT_RULES = [("puppet",["布袋戲","偶戲","人偶","戲偶","掌中"]),("magic",["魔術","馬戲","特技","雜技"]),

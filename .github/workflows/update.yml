@@ -13,6 +13,7 @@ concurrency: { group: pages, cancel-in-progress: false }
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,7 +24,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898888+github-actions[bot]@users.noreply.github.com"
-          git add data/events.json
+          git add data/
           git diff --cached --quiet || (git commit -m "每日更新活動資料 $(TZ=Asia/Taipei date +%F)" && git push)
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

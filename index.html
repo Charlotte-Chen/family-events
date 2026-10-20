@@ -5,137 +5,166 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#f6efe3">
 <title>週末帶孩子去哪｜台灣親子活動</title>
-<meta name="description" content="每天自動更新的台灣親子活動、兒童劇、偶戲、說故事與展覽。">
+<meta name="description" content="每天自動更新的台灣親子活動時間軸：兒童劇、偶戲、說故事、親子音樂會。">
 <style>
-:root{--paper:#f6efe3;--card:#fffaf2;--ink:#2b2622;--mute:#7a6e63;--line:#e6dccb;--accent:#d9573b;--teal:#2f6f6a;--sun:#f2b33d}
+:root{--paper:#f6efe3;--card:#fffaf2;--ink:#2b2622;--mute:#7a6e63;--line:#e6dccb;--accent:#d9573b;--teal:#2f6f6a;--sun:#f2b33d;--wk:#fbe7d9}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;-webkit-text-size-adjust:100%}
-header{padding:22px 18px 8px;position:relative}
-header h1{margin:0;font-size:26px;letter-spacing:.04em;line-height:1.2}
+header{padding:18px 16px 4px;position:relative}
+header h1{margin:0;font-size:24px;letter-spacing:.04em}
 header h1 span{color:var(--accent)}
-header p{margin:6px 0 0;color:var(--mute);font-size:13px}
-.sun{position:absolute;right:18px;top:18px;width:46px;height:46px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 6px #f2b33d33}
-.bar{position:sticky;top:0;z-index:5;background:var(--paper);padding:8px 14px 10px;border-bottom:1px solid var(--line)}
-.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:3px 0}
+.sun{position:absolute;right:16px;top:14px;width:38px;height:38px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 5px #f2b33d33}
+#summary{display:block;margin:10px 16px 2px;padding:10px 12px;border-radius:12px;background:var(--ink);color:#fff;font-size:15px;font-weight:700;border:0;width:calc(100% - 32px);text-align:left;font-family:inherit}
+#summary small{display:block;font-weight:400;opacity:.75;font-size:12px;margin-top:2px}
+.bar{position:sticky;top:0;z-index:6;background:var(--paper);padding:6px 0 6px;border-bottom:1px solid var(--line)}
+.row{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:3px 16px}
 .row::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:14px;font-family:inherit}
-.chip[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.chip.near[aria-pressed=true]{background:var(--teal);border-color:var(--teal)}
-select.chip{appearance:none;-webkit-appearance:none;padding-right:26px;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%;background-size:5px 5px;background-repeat:no-repeat}
-#count{font-size:12px;color:var(--mute);margin:6px 2px 0}
-main{padding:12px 14px 40px;max-width:720px;margin:0 auto}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:0 0 12px;overflow:hidden;box-shadow:0 1px 0 #0000000a}
-.when{display:flex;align-items:stretch;border-bottom:1px dashed var(--line)}
-.date{flex:none;width:76px;background:var(--accent);color:#fff;text-align:center;padding:9px 4px;display:flex;flex-direction:column;justify-content:center}
-.date .m{font-size:12px;opacity:.9}.date .d{font-size:28px;font-weight:800;line-height:1.05}.date .w{font-size:12px}
-.date.on{background:var(--teal)}.date.on .d{font-size:17px;line-height:1.25}
-.meta{padding:9px 12px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:3px}
-.time{font-size:17px;font-weight:700}
-.time small{font-weight:500;color:var(--mute);font-size:12px;margin-left:4px}
-.loc{font-size:15px;font-weight:600;color:var(--ink)}
-.loc .city{display:inline-block;background:#2f6f6a1a;color:var(--teal);border-radius:6px;padding:0 6px;margin-right:5px;font-size:12px;font-weight:700;vertical-align:1px}
-.addr{font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.body{padding:10px 12px 12px}
-.body h2{margin:0 0 6px;font-size:17px;line-height:1.4}
-.body h2 a{color:var(--ink);text-decoration:none;background:linear-gradient(transparent 62%,#f2b33d66 0)}
-.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
-.tag{font-size:12px;border-radius:6px;padding:2px 7px;background:#ece3d3;color:#5d5248}
-.tag.free{background:#2f6f6a;color:#fff}.tag.paid{background:#fbe1d9;color:#a63d24}.tag.reg{background:#fff1cc;color:#7a5600}
-.tag.dist{background:var(--ink);color:#fff}
-.desc{font-size:13px;color:var(--mute);margin:7px 0 0;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.go{display:inline-block;margin-top:9px;font-size:14px;font-weight:700;color:var(--accent);text-decoration:none}
-.empty{text-align:center;color:var(--mute);padding:40px 10px}
-footer{color:var(--mute);font-size:12px;text-align:center;padding:10px 18px 30px;line-height:1.7}
-footer a{color:var(--mute)}
-#more{display:block;margin:6px auto 0;border:1.5px solid var(--ink);background:none;border-radius:999px;padding:9px 22px;font-size:14px;font-family:inherit;color:var(--ink)}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;font-family:inherit;line-height:1.3}
+.chip[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.pill[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:#fff}
+select.chip{appearance:none;-webkit-appearance:none;padding-right:24px;background-image:linear-gradient(45deg,transparent 50%,var(--mute) 50%),linear-gradient(135deg,var(--mute) 50%,transparent 50%);background-position:calc(100% - 13px) 52%,calc(100% - 8px) 52%;background-size:5px 5px;background-repeat:no-repeat}
+input.chip{width:132px}
+main{max-width:720px;margin:0 auto;padding:0 0 30px}
+.week{margin:18px 16px 4px;font-size:12px;color:var(--mute);display:flex;align-items:center;gap:8px;letter-spacing:.08em}
+.week:before,.week:after{content:"";flex:1;height:1px;background:var(--line)}
+.day{position:sticky;top:var(--barh,96px);z-index:4;background:var(--paper);padding:8px 16px 6px;font-size:16px;font-weight:800;display:flex;justify-content:space-between;align-items:baseline}
+.day small{font-weight:500;color:var(--mute);font-size:13px}
+.day.we{background:var(--wk);color:#a63d24}
+.day.today:after{content:"今天";font-size:12px;background:var(--accent);color:#fff;border-radius:6px;padding:1px 6px;margin-left:auto;margin-right:8px;order:1}
+.day small{order:2}
+.none{margin:2px 16px 8px;color:var(--mute);font-size:13px;padding:10px;border:1px dashed var(--line);border-radius:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:6px 16px 8px;padding:10px 12px 10px;border-left:5px solid var(--teal)}
+.we+.cards .card,.cards.we .card{border-left-color:var(--accent)}
+.l1{font-size:16px;font-weight:800;line-height:1.35}
+.l1 .d{font-weight:600;color:var(--mute);font-size:13px;margin-right:4px}
+.l1 .v{font-weight:700}
+.l1 .c{display:inline-block;font-size:11px;font-weight:700;color:var(--teal);background:#2f6f6a1a;border-radius:5px;padding:0 5px;margin-left:4px;vertical-align:2px}
+.l2{margin:4px 0 6px;font-size:15px;line-height:1.45}
+.l2 a{color:var(--ink);text-decoration:none;background:linear-gradient(transparent 62%,#f2b33d66 0)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-size:12px;border-radius:6px;padding:1px 7px;background:#ece3d3;color:#5d5248}
+.tag.free{background:var(--teal);color:#fff}.tag.paid{background:#fbe1d9;color:#a63d24}.tag.reg{background:#fff1cc;color:#7a5600}
+.tag.rec{background:#e5edf7;color:#2c4a73}.tag.dist{background:var(--ink);color:#fff}
+.note{font-size:12px;color:#2c4a73;margin-top:5px}
+#more{height:40px}
+.long{margin:22px 16px 0;border:1.5px solid var(--line);border-radius:14px;background:var(--card)}
+.long summary{padding:12px 14px;font-weight:700;font-size:15px;cursor:pointer;list-style:none}
+.long summary::-webkit-details-marker{display:none}
+.long summary:after{content:" ▾";color:var(--mute)}
+.long .card{margin:6px 10px 8px;border-left-color:var(--sun)}
+.empty{text-align:center;color:var(--mute);padding:30px 16px}
+footer{color:var(--mute);font-size:12px;text-align:center;padding:16px 18px 30px;line-height:1.7}
 </style>
 </head>
 <body>
-<header><div class="sun" aria-hidden="true"></div><h1>週末帶孩子<span>去哪</span></h1><p>台灣親子活動・兒童劇・偶戲・說故事・展覽，每天早上自動更新</p></header>
-<div class="bar">
-  <div class="row" id="rowDate" role="group" aria-label="日期"></div>
-  <div class="row">
-    <select class="chip" id="city" aria-label="縣市"><option value="">全部縣市</option></select>
-    <button class="chip" id="fee" data-v="">免費／售票：全部</button>
-    <button class="chip near" id="near" aria-pressed="false">📍 離我最近</button>
+<header><div class="sun" aria-hidden="true"></div><h1>週末帶孩子<span>去哪</span></h1></header>
+<button id="summary" type="button">載入中…</button>
+<div class="bar" id="bar">
+  <div class="row" id="jump" aria-label="跳到日期"></div>
+  <div class="row" id="pills" aria-label="篩選">
+    <select class="chip" id="city" aria-label="縣市"><option value="">全部縣市</option><option value="雙北">雙北</option></select>
+    <button class="chip pill" data-k="free" aria-pressed="false">免費</button>
+    <button class="chip pill" data-k="noreg" aria-pressed="false">不用報名</button>
+    <button class="chip pill" data-k="indoor" aria-pressed="false">☂ 下雨也能去</button>
+    <button class="chip pill" id="near" aria-pressed="false">📍 離我最近</button>
+    <select class="chip" id="cat" aria-label="類型"><option value="">全部類型</option></select>
   </div>
-  <div class="row" id="rowCat" role="group" aria-label="類型"></div>
-  <div id="count"></div>
 </div>
-<main id="list"><div class="empty">載入中…</div></main>
+<main><div id="tl"><div class="empty">載入中…</div></div><div id="more"></div><div id="longwrap"></div></main>
 <footer id="foot"></footer>
 <script>
-const WD="日一二三四五六";
-const S={date:"all",city:"",cat:"",fee:"",near:false,pos:null,limit:40};
-let DATA=null;
-const $=s=>document.querySelector(s);
+const WD="日一二三四五六",$=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const ymd=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-function tw(){return new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Taipei"}))}
-function range(k){const t=tw(),a=ymd(t);
-  if(k==="today")return[a,a];
-  if(k==="weekend"){const w=t.getDay();const sat=new Date(t);sat.setDate(t.getDate()+(w===0?-1:6-w));const sun=new Date(sat);sun.setDate(sat.getDate()+1);return[w===0?a:ymd(sat),ymd(sun)]}
-  if(k==="week"){const e=new Date(t);e.setDate(t.getDate()+6);return[a,ymd(e)]}
-  if(k==="month"){const e=new Date(t.getFullYear(),t.getMonth()+1,0);return[a,ymd(e)]}
-  return[a,"9999"]}
-function km(a,b,c,d){const R=6371,r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 2*R*Math.asin(Math.sqrt(x))}
-// 取在範圍內的第一個場次
-function pick(e,[a,b]){const s=e.sessions.find(s=>{const st=s.start.slice(0,10),en=(s.end||s.start).slice(0,10);return en>=a&&st<=b});return s}
-function link(e){return e.ticketUrl||e.registrationUrl||e.url||""}
-function card(e,s,today){
-  const st=s.start.slice(0,10),en=(s.end||s.start).slice(0,10),multi=en>st;
-  let dh;
-  if(multi&&st<=today){const d=new Date(en+"T00:00");dh=`<div class="date on"><div class="m">進行中</div><div class="d">至<br>${d.getMonth()+1}/${d.getDate()}</div></div>`}
-  else{const d=new Date(st+"T00:00");dh=`<div class="date"><div class="m">${d.getMonth()+1}月</div><div class="d">${d.getDate()}</div><div class="w">週${WD[d.getDay()]}</div></div>`}
-  let t1=s.start.slice(11,16),t2=(s.end||"").slice(11,16);if(t1==="00:00"&&(!t2||t2==="00:00"||t2==="23:59")){t1="";t2=""}if(t2==="00:00")t2="";
-  let time=t1?(t2&&t2!==t1&&!multi?`${t1}–${t2}`:(multi&&t2?`每日 ${t1}–${t2}`:t1)):"時間詳見活動頁";
-  if(multi&&st>today){const d=new Date(en+"T00:00");time+=`<small>至 ${d.getMonth()+1}/${d.getDate()}</small>`}
-  if(e.sessionCount>1&&!multi)time+=`<small>共 ${e.sessionCount} 場</small>`;
-  const venue=s.venue||e.venue||"地點詳見活動頁",addr=s.address||e.address;
-  const tags=[`<span class="tag">${esc(DATA.categories[e.category]||"其他")}</span>`];
-  if(e.free===true)tags.push('<span class="tag free">免費</span>');else if(e.free===false)tags.push('<span class="tag paid">售票／收費</span>');
-  if(e.ticketUrl)tags.push('<span class="tag reg">可線上購票</span>');else if(e.registrationUrl||e.needsRegistration)tags.push('<span class="tag reg">需報名</span>');
-  if(e._d!=null)tags.push(`<span class="tag dist">${e._d<1?Math.round(e._d*1000)+" 公尺":e._d.toFixed(1)+" 公里"}</span>`);
-  const L=link(e),act=e.ticketUrl?"前往購票 →":(e.registrationUrl?"前往報名 →":"看活動詳情 →");
-  const title=L?`<a href="${esc(L)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title);
-  const desc=(e.description||"").replace(/https?:\/\/\S+/g,"").replace(/www\.\S+/g,"").trim();
-  return `<article class="card"><div class="when">${dh}<div class="meta"><div class="time">${time}</div><div class="loc">${e.city?`<span class="city">${esc(e.city.replace("臺","台"))}</span>`:""}${esc(venue)}</div>${addr&&addr!==venue?`<div class="addr">${esc(addr)}</div>`:""}</div></div>
-  <div class="body"><h2>${title}</h2><div class="tags">${tags.join("")}</div>${desc?`<p class="desc">${esc(desc)}</p>`:""}${L?`<a class="go" href="${esc(L)}" target="_blank" rel="noopener">${act}</a>`:""}</div></article>`}
+const S={range:"",from:"",to:"",city:"",cat:"",free:false,noreg:false,indoor:false,near:false,pos:null,days:10};
+let D=null,OCC=[],LONG=[];
+const pad=n=>String(n).padStart(2,"0"),ymd=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const tw=()=>new Date(new Date().toLocaleString("en-US",{timeZone:"Asia/Taipei"}));
+const pd=s=>new Date(s+"T00:00");const add=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const md=s=>{const d=pd(s);return `${d.getMonth()+1}/${d.getDate()}`},mdw=s=>`${md(s)}（${WD[pd(s).getDay()]}）`;
+const TODAY=ymd(tw());
+function ranges(){const t=pd(TODAY),w=t.getDay(),sat=add(t,w===0?-1:6-w),nextMon=add(t,w===0?1:8-w),mEnd=new Date(t.getFullYear(),t.getMonth()+1,0);
+ return{today:["今天",TODAY,TODAY],tomorrow:["明天",ymd(add(t,1)),ymd(add(t,1))],weekend:["這週末",w===0?TODAY:ymd(sat),ymd(add(sat,1))],
+  nextweekend:["下週末",ymd(add(sat,7)),ymd(add(sat,8))],nextweek:["下週",ymd(nextMon),ymd(add(nextMon,6))],month:["這個月",TODAY,ymd(mEnd)]}}
+const R=ranges();
+function km(a,b,c,d){const r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 12742*Math.asin(Math.sqrt(x))}
+const OUT=/戶外|公園|廣場|步道|河濱|農場|露營|登山|海灘|草地|園區戶外|踏青|生態導覽/,IN=/圖書館|劇場|劇院|廳|博物館|美術館|文化中心|藝文中心|教室|兒童室|室內|展覽室|紀念館|故事館|書店|誠品|影城|親子館/;
+function indoor(e,o){const t=e.title+(o.venue||e.venue||"")+(e.description||"").slice(0,120);if(OUT.test(t))return false;if(IN.test((o.venue||e.venue||"")+e.title))return true;return null}
+function age(e,o){const t=e.title+" "+(o.name||"")+" "+(e.description||"").slice(0,200);let m=t.match(/(\d{1,2})\s*(?:個月)?\s*[-~～至到]\s*(\d{1,2})\s*(歲|個月)/);if(m)return`${m[1]}–${m[2]}${m[3]}`;m=t.match(/(\d{1,2})\s*歲以上/);if(m)return`${m[1]}歲以上`;if(/寶寶|嬰幼兒/.test(t))return"0–3歲";return""}
+const link=e=>e.ticketUrl||e.registrationUrl||e.url||"";
+const twc=c=>(c||"").replace("臺","台");
+function cityOk(e,o){const c=(o&&o.city)||e.city;return !S.city||(S.city==="雙北"?(c==="新北市"||c==="臺北市"):c===S.city)}
+function pass(e,o){if(!cityOk(e,o))return false;if(S.cat&&e.category!==S.cat)return false;if(S.free&&e.free!==true)return false;
+ if(S.noreg&&(e.needsRegistration||e.registrationUrl&&!e.ticketUrl||e.ticketUrl))return false;
+ if(S.indoor&&indoor(e,o)!==true)return false;
+ o._d=null;if(S.pos){const la=o.lat??e.lat,lo=o.lng??e.lng;if(la!=null)o._d=km(S.pos[0],S.pos[1],la,lo)}
+ if(S.near&&(o._d==null||o._d>15))return false;return true}
+function card(e,o,long){
+ const t=o.t1?(o.t2&&o.t2!==o.t1?`${o.t1}–${o.t2}`:o.t1):(long?"":"時間未定");
+ const v=o.venue||e.venue||"地點見活動頁";
+ const tags=[];
+ if(e.free===true)tags.push('<span class="tag free">免費</span>');else if(e.free===false)tags.push(`<span class="tag paid">${e.ticketUrl?"售票":"收費"}</span>`);
+ const a=age(e,o);if(a)tags.push(`<span class="tag">${esc(a)}</span>`);
+ if(e.ticketUrl)tags.push('<span class="tag reg">需購票</span>');
+ else if(e.registrationUrl||e.needsRegistration)tags.push(`<span class="tag reg">需報名${o.regEnd?`（截止 ${md(o.regEnd.slice(0,10))}）`:""}</span>`);
+ const io=indoor(e,o);if(io!==null)tags.push(`<span class="tag">${io?"室內":"戶外"}</span>`);
+ tags.push(`<span class="tag">${esc(D.categories[e.category]||"其他")}</span>`);
+ if(e.recurrence)tags.push(`<span class="tag rec">↻ ${esc(e.recurrence)}</span>`);
+ if(o._d!=null)tags.push(`<span class="tag dist">${o._d<1?Math.round(o._d*1000)+" 公尺":o._d.toFixed(1)+" 公里"}</span>`);
+ if(long&&e.longRange)tags.unshift(`<span class="tag rec">展到 ${md(e.longRange.to)}</span>`);
+ const L=link(e),title=L?`<a href="${esc(L)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title);
+ const dl=long?"":`<span class="d">${mdw(o.date)}</span>`;
+ return `<article class="card"><div class="l1">${dl}${t?esc(t)+"｜":""}<span class="v">${esc(v)}</span>${(o.city||e.city)?`<span class="c">${esc(twc(o.city||e.city))}</span>`:""}</div>
+ <div class="l2">${title}</div><div class="tags">${tags.join("")}</div>${e.recurrenceNote&&!long?`<div class="note">↻ ${esc(e.recurrenceNote)}</div>`:""}${o.name&&o.name!==e.title?`<div class="note" style="color:var(--mute)">場次：${esc(o.name)}</div>`:""}</article>`}
+function filtered(){const a=S.from||TODAY,b=S.to||"9999";return OCC.filter(([e,o])=>o.date>=a&&o.date<=b&&pass(e,o))}
 function render(){
-  const R=range(S.date),today=R[0];let out=[];
-  for(const e of DATA.events){
-    if(S.city&&e.city!==S.city)continue;if(S.cat&&e.category!==S.cat)continue;
-    if(S.fee==="free"&&e.free!==true)continue;if(S.fee==="paid"&&e.free!==false)continue;
-    const s=pick(e,R);if(!s)continue;
-    e._d=(S.pos&&s.lat!=null)?km(S.pos[0],S.pos[1],s.lat,s.lng):(S.pos&&e.lat!=null?km(S.pos[0],S.pos[1],e.lat,e.lng):null);
-    if(S.near&&e._d==null)continue;
-    out.push([e,s])}
-  if(S.near)out.sort((a,b)=>a[0]._d-b[0]._d);
-  else out.sort((a,b)=>{const x=a[1].start<today?today:a[1].start,y=b[1].start<today?today:b[1].start;return x<y?-1:x>y?1:0});
-  $("#count").textContent=`找到 ${out.length} 個活動${S.near?"（依距離排序，只列有座標的活動）":"（依日期排序）"}`;
-  $("#list").innerHTML=out.length?out.slice(0,S.limit).map(([e,s])=>card(e,s,today)).join("")+(out.length>S.limit?'<button id="more">再看更多</button>':""):'<div class="empty">這個條件下暫時沒有活動，換個篩選試試看 🙂</div>';
-  const m=$("#more");if(m)m.onclick=()=>{S.limit+=40;render()}}
-function chips(el,items,key){el.innerHTML=items.map(([v,l])=>`<button class="chip" data-v="${v}" aria-pressed="${S[key]===v}">${l}</button>`).join("");
-  el.onclick=ev=>{const b=ev.target.closest("button");if(!b)return;S[key]=b.dataset.v;S.limit=40;el.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()}}
-fetch("data/events.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{DATA=d;
-  chips($("#rowDate"),[["all","全部日期"],["today","今天"],["weekend","這個週末"],["week","未來 7 天"],["month","這個月"]],"date");
-  const used=new Set(d.events.map(e=>e.category));
-  chips($("#rowCat"),[["","全部類型"],...Object.entries(d.categories).filter(([k])=>used.has(k))],"cat");
-  const cs={};d.events.forEach(e=>{if(e.city)cs[e.city]=(cs[e.city]||0)+1});
-  const order=["新北市","臺北市"];const cl=Object.keys(cs).sort((a,b)=>(order.indexOf(b)-order.indexOf(a))||cs[b]-cs[a]);
-  $("#city").innerHTML+=cl.map(c=>`<option value="${c}">${c.replace("臺","台")}（${cs[c]}）</option>`).join("");
-  $("#city").onchange=ev=>{S.city=ev.target.value;S.limit=40;render()};
-  const fees=[["","免費／售票：全部"],["free","只看免費"],["paid","只看售票"]];
-  $("#fee").onclick=ev=>{const i=(fees.findIndex(f=>f[0]===S.fee)+1)%3;S.fee=fees[i][0];ev.target.textContent=fees[i][1];ev.target.setAttribute("aria-pressed",S.fee!=="");render()};
-  $("#near").onclick=ev=>{const b=ev.currentTarget;
-    if(S.near){S.near=false;b.setAttribute("aria-pressed","false");b.textContent="📍 離我最近";render();return}
-    if(!navigator.geolocation){alert("這支手機不支援定位");return}
-    b.textContent="📍 定位中…";
-    navigator.geolocation.getCurrentPosition(p=>{S.pos=[p.coords.latitude,p.coords.longitude];S.near=true;b.setAttribute("aria-pressed","true");b.textContent="📍 離我最近 ✓";render()},
-      ()=>{b.textContent="📍 離我最近";alert("無法取得位置，請到設定允許瀏覽器使用定位")},{enableHighAccuracy:false,timeout:10000,maximumAge:600000})};
-  const g=new Date(d.generatedAt);
-  $("#foot").innerHTML=`資料更新：${g.toLocaleString("zh-TW",{timeZone:"Asia/Taipei",hour12:false})}<br>資料來源：${Object.values(d.sources).map(s=>esc(s.label)).join("、")}（政府資料開放授權）<br>活動內容以主辦單位公告為準，出發前請再確認`;
-  render()}).catch(()=>{$("#list").innerHTML='<div class="empty">資料載入失敗，請稍後再試</div>'});
+ const list=filtered(),by={};list.forEach(x=>(by[x[1].date]||(by[x[1].date]=[])).push(x));
+ const keys=Object.keys(by).sort();
+ // 決定時間軸日子：從起點連續到最後有活動的一天；空白平日略過，空白週末顯示「尚無活動」
+ const start=S.from||TODAY,last=S.to&&S.to!=="9999"?S.to:(keys[keys.length-1]||start);
+ const days=[];for(let d=pd(start);ymd(d)<=last;d=add(d,1)){const k=ymd(d),w=d.getDay();if(by[k]||w===0||w===6||S.from)days.push(k)}
+ let html="",lastWeek="",shown=0;
+ for(const k of days){if(shown>=S.days)break;
+  const d=pd(k),mon=add(d,-((d.getDay()+6)%7)),wk=ymd(mon);
+  if(wk!==lastWeek){lastWeek=wk;const label=wk<=TODAY&&ymd(add(mon,6))>=TODAY?"這週":(ymd(add(mon,-7))<=TODAY&&ymd(add(mon,-1))>=TODAY?"下週":"");html+=`<div class="week">${label?label+"・":""}${md(wk)}–${md(ymd(add(mon,6)))}</div>`}
+  const we=d.getDay()===0||d.getDay()===6,arr=(by[k]||[]).sort((x,y)=>(x[1].t1||"99")<(y[1].t1||"99")?-1:(x[1].t1||"99")>(y[1].t1||"99")?1:0);
+  if(S.near)arr.sort((x,y)=>x[1]._d-y[1]._d);
+  html+=`<div class="day${we?" we":""}${k===TODAY?" today":""}" id="d${k}">${mdw(k)}<small>${arr.length?arr.length+" 場":""}</small></div><div class="cards${we?" we":""}">`;
+  html+=arr.length?arr.map(([e,o])=>card(e,o)).join(""):'<div class="none">這天尚無符合的活動</div>';html+="</div>";
+  shown++}
+ $("#tl").innerHTML=html||'<div class="empty">這個條件下暫時沒有活動，換個篩選試試看 🙂</div>';
+ $("#more").dataset.done=days.length<=S.days?"1":"";
+ // 長期展覽（折疊在最下面）
+ const lg=LONG.filter(([e,o])=>pass(e,o));
+ $("#longwrap").innerHTML=lg.length?`<details class="long"><summary>都沒喜歡的？常設與長期展覽（${lg.length}）</summary>${lg.map(([e,o])=>card(e,o,true)).join("")}</details>`:"";
+ summary()}
+function summary(){const r=R.weekend,cityL=S.city?twc(S.city):"全台";
+ const n=OCC.filter(([e,o])=>o.date>=r[1]&&o.date<=r[2]&&cityOk(e,o));const f=n.filter(([e])=>e.free===true).length;
+ $("#summary").innerHTML=`這週末 ${esc(cityL)} ${n.length} 場，免費 ${f} 場 →<small>${md(r[1])}–${md(r[2])}・點一下只看這週末</small>`}
+function setRange(k){S.range=k;if(k&&R[k]){S.from=R[k][1];S.to=R[k][2]}else if(!k){S.from="";S.to=""}
+ document.querySelectorAll("#jump .chip[data-r]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===k));S.days=14;render();window.scrollTo({top:0})}
+function setPos(cb){navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{S.pos=[p.coords.latitude,p.coords.longitude];cb&&cb(true)},()=>cb&&cb(false),{timeout:8000,maximumAge:600000})}
+fetch("data/events.json",{cache:"no-cache"}).then(r=>r.json()).then(d=>{D=d;
+ d.events.forEach(e=>{e.occurrences.forEach(o=>OCC.push([e,o]));if(e.longRunning)LONG.push([e,e.longRange||{}])});
+ LONG.sort((a,b)=>(a[0].longRange?.to||"")<(b[0].longRange?.to||"")?-1:1);
+ $("#jump").innerHTML=`<button class="chip" data-r="" aria-pressed="true">全部</button>`+Object.entries(R).map(([k,v])=>`<button class="chip" data-r="${k}" aria-pressed="false">${v[0]}</button>`).join("")+`<input class="chip" type="date" id="pick" aria-label="選日期" min="${TODAY}">`;
+ $("#jump").onclick=ev=>{const b=ev.target.closest("button");if(b)setRange(b.dataset.r)};
+ $("#pick").onchange=ev=>{if(!ev.target.value)return;S.range="pick";S.from=S.to=ev.target.value;document.querySelectorAll("#jump .chip[data-r]").forEach(b=>b.setAttribute("aria-pressed","false"));S.days=14;render()};
+ $("#summary").onclick=()=>setRange("weekend");
+ const cs={};d.events.forEach(e=>{if(e.city)cs[e.city]=(cs[e.city]||0)+1});
+ $("#city").innerHTML+=Object.keys(cs).sort((a,b)=>cs[b]-cs[a]).map(c=>`<option value="${c}">${twc(c)}</option>`).join("");
+ $("#city").onchange=ev=>{S.city=ev.target.value;S.days=14;render()};
+ const used=new Set(d.events.map(e=>e.category));$("#cat").innerHTML+=Object.entries(d.categories).filter(([k])=>used.has(k)).map(([k,v])=>`<option value="${k}">${v}</option>`).join("");
+ $("#cat").onchange=ev=>{S.cat=ev.target.value;render()};
+ document.querySelectorAll(".pill[data-k]").forEach(b=>b.onclick=()=>{S[b.dataset.k]=!S[b.dataset.k];b.setAttribute("aria-pressed",S[b.dataset.k]);S.days=14;render()});
+ $("#near").onclick=ev=>{const b=ev.currentTarget;if(S.near){S.near=false;b.setAttribute("aria-pressed","false");render();return}
+  b.textContent="📍 定位中…";setPos(ok=>{b.textContent="📍 離我最近";if(!ok){alert("無法取得位置，請到設定允許瀏覽器使用定位");return}S.near=true;b.setAttribute("aria-pressed","true");render()})};
+ // 縣市預設：依定位找最近活動所在縣市（雙北合併）
+ setPos(ok=>{if(!ok||S.city)return;let best=null;OCC.forEach(([e,o])=>{const la=o.lat??e.lat;if(la==null||!e.city)return;const k=km(S.pos[0],S.pos[1],la,o.lng??e.lng);if(!best||k<best[0])best=[k,e.city]});
+  if(best&&best[0]<30){S.city=(best[1]==="新北市"||best[1]==="臺北市")?"雙北":best[1];$("#city").value=S.city;render()}});
+ new IntersectionObserver(es=>{if(es[0].isIntersecting&&!$("#more").dataset.done){S.days+=14;render()}}).observe($("#more"));
+ const bh=()=>document.documentElement.style.setProperty("--barh",$("#bar").offsetHeight+"px");bh();addEventListener("resize",bh);
+ $("#foot").innerHTML=`資料更新：${new Date(d.generatedAt).toLocaleString("zh-TW",{timeZone:"Asia/Taipei",hour12:false})}<br>資料來源：${Object.values(d.sources).map(s=>esc(s.label)).join("、")}（政府開放資料與公開活動頁）<br>活動內容以主辦單位公告為準，出發前請再確認`;
+ render()}).catch(err=>{console.error(err);$("#tl").innerHTML='<div class="empty">資料載入失敗，請稍後再試</div>'});
 </script>
 </body>
 </html>
