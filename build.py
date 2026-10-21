@@ -28,7 +28,7 @@ def main():
             stats[a.NAME] = {"label": a.LABEL, "count": len(ev), "ok": False, "error": str(e)[:200]}
         events += ev
     import re
-    PRI = {"manual": -1, "atpass": 0, "ntsec": 0, "moc": 1, "ntpc": 2, "tsf": 3, "beclass": 5}
+    PRI = {"atpass": 0, "ntsec": 0, "moc": 1, "ntpc": 2, "tsf": 3, "beclass": 5}
     seen, uniq = {}, []
     for e in sorted(events, key=lambda e: (PRI.get(e["source"], 9), e["start"], e["title"])):
         k = (re.sub(r"^\s*【[^】]*】\s*|\s+", "", e["title"]), e["start"][:7])
