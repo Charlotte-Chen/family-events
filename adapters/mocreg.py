@@ -47,6 +47,8 @@ def fetch(today):
                 if (en or st)[:10] < today.isoformat(): continue
                 sn = re.search(r'場次:</div>\s*<div class="">\s*([\s\S]*?)<span', box)
                 bt = _t(box).replace("\u00a0", " ")
+                pay = re.search(r'class="new_pay">([\s\S]*?)</div>', box)
+                pay = _t(pay.group(1)) if pay else ""
                 reg = re.search(r"報\s*名\s*期\s*間\s*(\d{4}/\d{2}/\d{2} \d{2}:\d{2})\s*~\s*(\d{4}/\d{2}/\d{2} \d{2}:\d{2})", bt)
                 q = re.search(r"名\s*額\s*(\d+)", bt)
                 left = re.search(r"正取剩\s*(\d+)\s*名", bt)
@@ -55,7 +57,7 @@ def fetch(today):
                 btn = re.findall(r'value="(報名|截止|額滿|候補|未開放|尚未開放)"', box)
                 sess.append({"start": st, "end": en if en[:10] == st[:10] else "", "venue": re.split(r"\s*(?:<|名\s*額|正取|講\s*師|備註|場次介紹)", _t(ven.group(1)))[0].strip() if ven else oname,
                     "address": urllib.parse.unquote(addr.group(1)) if addr else "", "lat": None, "lng": None,
-                    "name": _t(sn.group(1))[:80] if sn else "", "quota": q.group(1) if q else "",
+                    "name": _t(sn.group(1))[:80] if sn else "", "pay": pay, "quota": q.group(1) if q else "",
                     "left": left.group(1) if left else "", "status": btn[-1] if btn else "",
                     "regStart": _dt(reg.group(1)).replace("T", " ") if reg else "", "regEnd": _dt(reg.group(2)).replace("T", " ") if reg else ""})
             if not sess: continue
@@ -67,11 +69,12 @@ def fetch(today):
             if re.search(r"學校團體|團體預約|閱覽證|講座|研討會|論壇", name) and not re.search(r"親子|兒童", name): continue
             sess.sort(key=lambda s: s["start"])
             f = sess[0]
-            free = True if re.search(r"免費", desc) else (False if re.search(r"\d+\s*元", desc) else None)
+            free = None
+            fulldesc = _t(h[h.find("活動內容介紹"): h.find("活動內容介紹") + 12000]) if "活動內容介紹" in h else ""
             out.append({"id": f"mocreg:{org}:{aid}", "source": NAME, "title": name, "category": categorize(name + " " + desc[:200]),
                 "start": f["start"][:10], "end": max((s["end"] or s["start"])[:10] for s in sess), "sessions": sess, "sessionCount": len(sess),
                 "city": "臺北市" if re.search(r"臺灣文學基地|（臺北）|\(臺北\)", name + f["venue"]) else (city_of(f["address"], f["venue"]) or ocity), "district": "", "venue": f["venue"], "address": f["address"],
-                "lat": None, "lng": None, "free": free, "price": "", "organizer": oname, "description": desc[:500], "image": "",
+                "lat": None, "lng": None, "free": free, "price": next((x["pay"] for x in sess if x.get("pay") and re.search(r"\d|免費", x["pay"])), ""), "priceText": fulldesc[:4000], "organizer": oname, "description": desc[:500], "image": "",
                 "ticketUrl": "", "registrationUrl": BASE + f"{org}/Detail.init.ctr?actId={aid}", "url": BASE + f"{org}/Detail.init.ctr?actId={aid}",
                 "needsRegistration": True, "updatedAt": ""})
     return out

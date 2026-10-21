@@ -3,7 +3,7 @@ import json, sys, os, traceback
 from datetime import datetime, timezone, timedelta
 from adapters import ADAPTERS
 from adapters.common import CAT_LABEL
-import postprocess
+import postprocess, cost
 TZ = timezone(timedelta(hours=8))
 def main():
     today = datetime.now(TZ).date(); os.makedirs("data/raw", exist_ok=True)
@@ -39,6 +39,9 @@ def main():
         seen.setdefault(k, e["source"]); uniq.append(e)
     if not uniq: sys.exit("no events; refusing to overwrite")
     uniq = [postprocess.tag(postprocess.expand(e, today)) for e in uniq]
+    try: print("opentix price fetched:", cost.enrich_opentix(uniq))
+    except Exception: traceback.print_exc()
+    uniq = [cost.apply(e) for e in uniq]
     uniq = [e for e in uniq if e["occurrences"] or e["longRunning"]]
     dated = {e["title"].strip() for e in uniq if e["occurrences"]}
     uniq = [e for e in uniq if e["occurrences"] or e["title"].strip() not in dated]

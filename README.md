@@ -42,3 +42,6 @@ ticketUrl, registrationUrl, url, needsRegistration, updatedAt
 - `postprocess.parse_age` 從標題、介紹、場次名稱抓年齡（如「大班至國小三年級」「6-13歲」「小一以上」「0-3歲」），轉成年齡分組 `ageBuckets`。
 - `postprocess.TOPICS` 用關鍵字標主題（科學、天文、歷史、自然、藝術、語言）；adapter 也可直接給 `tags`。
 - 場次有 `regStart`、`regEnd`、`quota`、`left`、`status` 時，網頁最上方「先搶報名」會依開放或截止時間排序列出。
+
+## 費用
+`cost.py`：依序取 adapter 給的 `cost`、價格欄位 `price`、詳細頁文字 `priceText`、介紹 `description`；OPENTIX 售票頁讀 schema.org AggregateOffer 的最低／最高票價（快取在 `data/pricecache.json`）；科教館讀官方「票價總覽」的常設展門票。都抓不到就顯示「費用未公告」，不猜。

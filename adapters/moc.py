@@ -49,7 +49,7 @@ def fetch(today):
             "sessions": [{k: s[k] for k in ("start","end","venue","address","lat","lng")} for s in sessions[:60]],
             "sessionCount": len(sessions), "city": city, "district": district_of(f["address"], city),
             "venue": f["venue"], "address": f["address"], "lat": f["lat"], "lng": f["lng"],
-            "free": free, "price": price[:120], "organizer": (x.get("showUnit") or ",".join(x.get("masterUnit") or [])).strip()[:60],
+            "free": free, "price": price[:120], "priceText": (desc[:4000] + " " + (x.get("discountInfo") or ""))[:4500], "organizer": (x.get("showUnit") or ",".join(x.get("masterUnit") or [])).strip()[:60],
             "description": desc[:400], "image": x.get("imageUrl") or "",
             "ticketUrl": ticket, "registrationUrl": "", "url": src or f"https://cloud.culture.tw/frontsite/inquiry/eventInquiryAction.do?method=showEventDetail&uid={x.get('UID')}",
             "updatedAt": (x.get("editModifyDate") or "")})

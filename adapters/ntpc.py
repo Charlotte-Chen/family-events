@@ -35,7 +35,7 @@ def fetch(today):
                 "category": categorize(title + " " + desc[:200]), "start": st.isoformat(), "end": en.isoformat(),
                 "sessions": [{"start": st.isoformat() + ("T"+t if t else ""), "end": en.isoformat() if en > st else "", "venue": place, "address": addr, "lat": None, "lng": None}],
                 "sessionCount": 1, "city": city, "district": district_of(addr, city), "venue": place, "address": addr,
-                "lat": None, "lng": None, "free": free_of((x.get("money") or "") + " " + desc), "price": (x.get("money") or "")[:120],
+                "lat": None, "lng": None, "free": free_of((x.get("money") or "") + " " + desc), "price": (x.get("money") or "")[:120], "priceText": desc[:4000],
                 "organizer": (x.get("author") or "").strip()[:60], "description": desc[:400], "image": x.get("picUrl") or "",
                 "ticketUrl": "", "registrationUrl": reg, "url": (x.get("aboutUrl") or "").strip(),
                 "needsRegistration": ("須報名" in desc or "需報名" in desc or "請報名" in desc or "報名網址" in desc) and "無須報名" not in desc and "免報名" not in desc,

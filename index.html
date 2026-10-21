@@ -38,6 +38,8 @@ main{max-width:720px;margin:0 auto;padding:0 0 30px}
 .l1{font-size:16px;font-weight:800;line-height:1.35}
 .l1 .d{font-weight:600;color:var(--mute);font-size:13px;margin-right:4px}
 .l1 .v{font-weight:700}
+.cost{display:inline-block;margin-top:3px;font-size:14px;font-weight:800;border-radius:7px;padding:1px 8px;background:#fbe1d9;color:#a63d24}
+.cost.free{background:var(--teal);color:#fff}.cost.unk{background:#ece3d3;color:#7a6e63;font-weight:600}
 .l1 .c{display:inline-block;font-size:11px;font-weight:700;color:var(--teal);background:#2f6f6a1a;border-radius:5px;padding:0 5px;margin-left:4px;vertical-align:2px}
 .l2{margin:4px 0 6px;font-size:15px;line-height:1.45}
 .l2 a{color:var(--ink);text-decoration:none;background:linear-gradient(transparent 62%,#f2b33d66 0)}
@@ -115,7 +117,6 @@ function card(e,o,long){
  const t=o.t1?(o.t2&&o.t2!==o.t1?`${o.t1}–${o.t2}`:o.t1):(long?"":"時間未定");
  const v=o.venue||e.venue||"地點見活動頁";
  const tags=[];
- if(e.free===true)tags.push('<span class="tag free">免費</span>');else if(e.free===false)tags.push(`<span class="tag paid">${e.ticketUrl?"售票":"收費"}</span>`);
  const a=age(e,o);if(a)tags.push(`<span class="tag age">${esc(a)}</span>`);
  if(e.ticketUrl)tags.push('<span class="tag reg">需購票</span>');
  else if(e.registrationUrl||e.needsRegistration)tags.push(`<span class="tag reg">需報名${o.regEnd?`（截止 ${md(o.regEnd.slice(0,10))}）`:""}${leftOf(o)!=null?`・剩 ${leftOf(o)} 名`:""}</span>`);
@@ -125,10 +126,11 @@ function card(e,o,long){
  if(e.recurrence)tags.push(`<span class="tag rec">↻ ${esc(e.recurrence)}</span>`);
  if(o._d!=null)tags.push(`<span class="tag dist">${o._d<1?Math.round(o._d*1000)+" 公尺":o._d.toFixed(1)+" 公里"}</span>`);
  if(long&&e.longRange)tags.unshift(`<span class="tag rec">展到 ${md(e.longRange.to)}</span>`);
- const L=link(e),title=L?`<a href="${esc(L)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title);
+ const cs=costHtml(e);const L=link(e),title=L?`<a href="${esc(L)}" target="_blank" rel="noopener">${esc(e.title)}</a>`:esc(e.title);
  const dl=long?"":`<span class="d">${mdw(o.date)}</span>`;
- return `<article class="card"><div class="l1">${dl}${t?esc(t)+"｜":""}<span class="v">${esc(v)}</span>${(o.city||e.city)?`<span class="c">${esc(twc(o.city||e.city))}</span>`:""}</div>
+ return `<article class="card"><div class="l1">${dl}${t?esc(t)+"｜":""}<span class="v">${esc(v)}</span>${(o.city||e.city)?`<span class="c">${esc(twc(o.city||e.city))}</span>`:""}<br>${cs}</div>
  <div class="l2">${title}</div><div class="tags">${tags.join("")}</div>${e.recurrenceNote&&!long?`<div class="note">↻ ${esc(e.recurrenceNote)}</div>`:""}${o.name&&o.name!==e.title?`<div class="note" style="color:var(--mute)">場次：${esc(o.name)}</div>`:""}</article>`}
+function costHtml(e){const c=e.cost||"費用未公告";return `<span class="cost${e.free===true?" free":(c.startsWith("費用未公告")?" unk":"")}">💰 ${esc(c)}</span>`}
 function leftOf(o){if(o.left)return +o.left;const m=String(o.quota||"").match(/^(\d+)\/(\d+)$/);if(m)return Math.max(0,m[2]-m[1]);return null}
 function nowStr(){const t=tw();return `${ymd(t)} ${pad(t.getHours())}:${pad(t.getMinutes())}`}
 function grab(){const now=nowStr(),best={};
@@ -141,7 +143,7 @@ function grab(){const now=nowStr(),best={};
  const show=S.grabAll?arr:arr.slice(0,5);
  const fmt=k=>{const d=k.slice(0,10),t=k.slice(11,16);return `${mdw(d)}${t&&t!=="23:59"&&t!=="00:00"?" "+t:""}`};
  $("#grab").innerHTML=`<section class="grab"><h2>⏰ 先搶報名<small>依開放／截止時間排序・${arr.length} 項</small></h2>`+show.map(({k,lab,e,o,L})=>{const Lk=link(e);
-  return `<div class="gi"><div class="when">${fmt(k)}<small>${lab==="opens"?"開放報名":"報名截止"}</small></div><div><a href="${esc(Lk)}" target="_blank" rel="noopener">${esc(e.title)}</a><div class="sub">活動 ${mdw(o.date)}${o.t1?" "+o.t1:""}｜${esc(o.venue||e.venue)}${L!=null?`｜剩 ${L} 名`:(o.quota?`｜名額 ${esc(o.quota)}`:"")}</div></div></div>`}).join("")+
+  return `<div class="gi"><div class="when">${fmt(k)}<small>${lab==="opens"?"開放報名":"報名截止"}</small></div><div><a href="${esc(Lk)}" target="_blank" rel="noopener">${esc(e.title)}</a><div>${costHtml(e)}</div><div class="sub">活動 ${mdw(o.date)}${o.t1?" "+o.t1:""}｜${esc(o.venue||e.venue)}${L!=null?`｜剩 ${L} 名`:(o.quota?`｜名額 ${esc(o.quota)}`:"")}</div></div></div>`}).join("")+
   (arr.length>5?`<button class="gmore" id="gmore">${S.grabAll?"收起":"看全部 "+arr.length+" 項 ▾"}</button>`:"")+`</section>`;
  const g=$("#gmore");if(g)g.onclick=()=>{S.grabAll=!S.grabAll;grab()}}
 function filtered(){const a=S.from||TODAY,b=S.to||"9999";return OCC.filter(([e,o])=>o.date>=a&&o.date<=b&&pass(e,o))}

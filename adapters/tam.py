@@ -39,7 +39,7 @@ def fetch(today):
         out.append({"id": "tam:" + re.search(r"ss=(\w+)", u).group(1), "source": NAME, "title": name, "category": categorize(name + desc),
             "start": sess[0]["start"][:10], "end": sess[-1]["start"][:10], "sessions": sess, "sessionCount": len(sess),
             "city": "臺北市", "district": "士林區", "venue": sess[0]["venue"], "address": "臺北市士林區基河路363號", "lat": 25.0957, "lng": 121.5185,
-            "free": True if "免費" in tx else None, "price": "", "organizer": "臺北市立天文科學教育館", "description": desc,
+            "free": None, "price": "", "priceText": tx[tx.find(name):][:3000] if name in tx else "", "organizer": "臺北市立天文科學教育館", "description": desc,
             "image": "", "ticketUrl": "", "registrationUrl": html.unescape(u).replace("Active_Content", "Active_Content"), "url": html.unescape(u),
             "needsRegistration": True, "tags": ["天文", "科學"], "updatedAt": ""})
     return out

@@ -8,8 +8,21 @@ LABEL = "國立臺灣科學教育館 活動行事曆"
 URL = "https://www.ntsec.gov.tw/article/activityCalendar.aspx?a=17&dt="
 DAYS = 35
 def _t(s): return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()
+TICKET = "https://www.ntsec.gov.tw/article/detail.aspx?a=23"
+def ticket_cost():
+    """從科教館官方「票價總覽」讀常設展門票價格。"""
+    try:
+        h = urllib.request.urlopen(urllib.request.Request(TICKET, headers=UA), timeout=40, context=_CTX).read().decode("utf-8", "replace")
+        t = _t(h); i = t.find("常設展門票")
+        m = re.search(r"全票\s*[:：]\s*(\d+)\s*元\s*優待票\s*[:：]\s*(\d+)\s*元", t[i:i + 300]) if i >= 0 else None
+        if m:
+            kid = "，6 歲以下免費" if re.search(r"6歲\s*\(含\)\s*以下兒童", t[i:i + 2000]) else ""
+            return f"需購常設展門票：全票 NT${m.group(1)}／優待 NT${m.group(2)}{kid}"
+    except Exception as ex: print("ntsec ticket fail", ex)
+    return None
 def fetch(today):
     occ = []
+    tc = ticket_cost(); time.sleep(1.5)
     for i in range(DAYS):
         d = (today + timedelta(days=i)).isoformat()
         if i: time.sleep(1.5)
@@ -36,7 +49,7 @@ def fetch(today):
             "sessions": [{"start": f"{o['date']}T{its[0][2]}", "end": f"{o['date']}T{its[-1][3]}", "venue": "國立臺灣科學教育館",
                 "address": "臺北市士林區士商路189號", "lat": 25.0961, "lng": 121.5154}],
             "sessionCount": 1, "city": "臺北市", "district": "士林區", "venue": "國立臺灣科學教育館", "address": "臺北市士林區士商路189號",
-            "lat": 25.0961, "lng": 121.5154, "free": None, "price": "需購展場門票",
+            "lat": 25.0961, "lng": 121.5154, "free": None, "price": "", "cost": tc or "",
             "organizer": "國立臺灣科學教育館",
             "description": "當日場次：" + "；".join(f"{a[2]} {a[0]}" for a in its[:30]),
             "image": "", "ticketUrl": "", "registrationUrl": "", "url": URL + o["date"], "needsRegistration": False,

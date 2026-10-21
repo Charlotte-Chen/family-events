@@ -57,6 +57,15 @@ def fetch(today, max_pages=40):
         if new == 0: break
     res = []
     for e in out.values():
+        try:
+            time.sleep(1.5)
+            d = op.open(e["url"], timeout=60).read().decode("utf-8", "replace")
+            fee = re.search(r"<span>費用資訊</span>\s*<p>([^<]*)</p>", d)
+            body = re.search(r'<p style="white-space: pre-line">([\s\S]*?)</p>', d)
+            e["priceText"] = ("費用資訊 " + _t(fee.group(1)) + "。" if fee else "") + (_t(body.group(1))[:2500] if body else "")
+            if fee and re.search(r"\d", fee.group(1)): e["price"] = _t(fee.group(1))
+        except Exception as ex:
+            print("atpass detail fail", e["url"], ex)
         e["sessions"].sort(key=lambda s: s["start"])
         e["start"] = e["sessions"][0]["start"][:10]; e["end"] = e["sessions"][-1]["start"][:10]
         e["sessionCount"] = len(e["sessions"])
