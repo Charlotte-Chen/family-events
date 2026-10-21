@@ -50,6 +50,7 @@ main{max-width:720px;margin:0 auto;padding:0 0 30px}
 .note{font-size:12px;color:#2c4a73;margin-top:5px}
 #more{height:40px}
 .long{margin:22px 16px 0;border:1.5px solid var(--line);border-radius:14px;background:var(--card)}
+.ext{margin:16px 12px 28px;padding:12px 14px;border:1px dashed var(--mute);border-radius:12px;display:flex;flex-direction:column;gap:8px;font-size:15px}.ext a{color:inherit;font-weight:600}
 .long summary{padding:12px 14px;font-weight:700;font-size:15px;cursor:pointer;list-style:none}
 .long summary::-webkit-details-marker{display:none}
 .long summary:after{content:" ▾";color:var(--mute)}
@@ -84,7 +85,7 @@ footer{color:var(--mute);font-size:12px;text-align:center;padding:16px 18px 30px
   </div>
   <div class="row" id="topics" aria-label="主題"></div>
 </div>
-<main><div id="grab"></div><div id="tl"><div class="empty">載入中…</div></div><div id="more"></div><div id="longwrap"></div></main>
+<main><div id="grab"></div><div id="tl"><div class="empty">載入中…</div></div><div id="more"></div><div id="longwrap"></div><div class="ext"><b>更多親子活動</b><a href="https://www.accupass.com/search?q=%E8%A6%AA%E5%AD%90" target="_blank" rel="noopener">到 Accupass 看更多親子活動 ›</a><a href="https://www.beclass.com/default.php?name=ShowList&amp;op=catRank&amp;range=Z" target="_blank" rel="noopener">到 BeClass 看幼兒/親子活動 ›</a></div></main>
 <footer id="foot"></footer>
 <script>
 const WD="日一二三四五六",$=s=>document.querySelector(s);
