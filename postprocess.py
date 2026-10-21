@@ -177,6 +177,7 @@ TOPICS = {"科學": r"科學|實驗|STEM|STEAM|科教|機器人|程式|物理|�
           "歷史": r"歷史|古蹟|考古|文化資產|人權|二二八|文物|鐵道部|老街|史前|博物館導覽|轉型正義|十三行|黃金博物館|礦",
           "自然": r"自然|生態|動物|植物|昆蟲|鳥|濕地|蝶|海洋|環境教育|永續|森林|綠色|農|種子|恐龍|化石",
           "藝術": r"藝術|美術|繪畫|畫畫|音樂|戲劇|舞蹈|偶戲|布袋戲|手作|工藝|陶|劇場|音樂會|劇團|彩繪|DIY",
+          "職業體驗": r"小小店長|小店長|小小職人|職人體驗|職業體驗|小小廚師|小廚師|小小消防|小小警察|小小站長|小小郵差|小小麵包師|小小咖啡師|小小農夫|小小售票員|職業探索",
           "語言": r"英語|英文|台語|臺語|客語|族語|日語|雙語|閱讀|繪本|說故事|故事屋|文學|母語|讀劇"}
 def tag(e):
     text = e["title"] + " " + (e.get("description") or "") + " " + " ".join(o.get("name", "") for o in e.get("occurrences", [])[:5])
@@ -188,5 +189,6 @@ def tag(e):
     tp = set(e.get("tags") or [])
     for k, rx in TOPICS.items():
         if re.search(rx, e["title"]) or re.search(rx, (e.get("description") or "")[:300]): tp.add(k)
+    tp.update(e.get("topicsHint") or [])
     e["topics"] = [k for k in TOPICS if k in tp]
     return e
