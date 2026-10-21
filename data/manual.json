@@ -1,0 +1,14 @@
+[
+  {
+    "id": "kids-science-2026",
+    "title": "2026 Kids' Science—小小科學家來敲門",
+    "date": "2026-10-24", "start": "09:30", "end": "17:00",
+    "venue": "臺北車站多功能展演區（大廳）", "address": "臺北市中正區北平西路3號", "city": "臺北市", "district": "中正區",
+    "price": "免費入場", "free": true,
+    "organizer": "國家科學及技術委員會",
+    "url": "https://kissscience.tw/motion.asp?siteid=100616&menuid=14388&lgid=1",
+    "needsRegistration": false,
+    "topics": ["科學"],
+    "description": "國科會 Kiss Science 親子科學活動，主要為國小學童及親子設計：30 多個互動攤位的科學市集、科學影城、雙語科學秀「科學大驚奇」、Kiss Science 大富翁；科普環島列車當天也回到臺北車站。科學市集、科學影城不須報名，活動時間內直接到場；「科學大驚奇」座位區已於 9/30 截止登記並抽選，未抽中仍可 10:00 起在座位區外站立觀賞。"
+  }
+]
